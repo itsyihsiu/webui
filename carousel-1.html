@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多項目輪播器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .carousel-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            padding: 0 60px;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+            gap: 20px;
+        }
+
+        .carousel-item {
+            flex: 0 0 calc(25% - 15px);
+            min-width: calc(25% - 15px);
+            aspect-ratio: 4/3;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-item a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-nav:hover {
+            background: rgba(0, 0, 0, 0.7);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .carousel-nav.prev {
+            left: 0;
+        }
+
+        .carousel-nav.next {
+            right: 0;
+        }
+
+        .carousel-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 calc(33.333% - 14px);
+                min-width: calc(33.333% - 14px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel-container {
+                padding: 0 50px;
+            }
+
+            .carousel-item {
+                flex: 0 0 calc(50% - 10px);
+                min-width: calc(50% - 10px);
+            }
+
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel-container {
+                padding: 0 40px;
+            }
+
+            .carousel-item {
+                flex: 0 0 100%;
+                min-width: 100%;
+            }
+
+            .carousel-track {
+                gap: 10px;
+            }
+
+            .carousel-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+        }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #333;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .dot:hover {
+            background: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel-wrapper">
+        <div class="carousel-container">
+            <button class="carousel-nav prev" id="prevBtn">‹</button>
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業部網站滿意度調查">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="食農教育資訊整合平臺">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業兒童網">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="動物疾病知識庫">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="產銷履歷">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業部">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業部虛擬博物館">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業科技專案計畫服務網">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業科技專案計畫服務網">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業科技專案計畫服務網">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業科技專案計畫服務網">
+                    </a>
+                </div>
+                <div class="carousel-item">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/600x400@2x.png" alt="農業科技專案計畫服務網">
+                    </a>
+                </div>
+            </div>
+            <button class="carousel-nav next" id="nextBtn">›</button>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <script>
+        const track = document.getElementById('carouselTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dotsContainer = document.getElementById('carouselDots');
+        
+        let currentIndex = 0;
+        let itemsPerView = 4;
+        let autoPlayInterval;
+
+        // 計算每頁顯示的項目數
+        function calculateItemsPerView() {
+            const width = window.innerWidth;
+            if (width <= 480) return 1;
+            if (width <= 768) return 2;
+            if (width <= 1024) return 3;
+            return 4;
+        }
+
+        // 獲取項目總數和總頁數
+        function getCarouselInfo() {
+            const items = track.children;
+            itemsPerView = calculateItemsPerView();
+            const totalItems = items.length;
+            const totalPages = Math.ceil(totalItems - itemsPerView + 1);
+            return { items, totalItems, totalPages };
+        }
+
+        // 更新輪播位置
+        function updateCarousel() {
+            const { items, totalPages } = getCarouselInfo();
+            const itemWidth = items[0].offsetWidth;
+            const gap = 20;
+            const offset = currentIndex * (itemWidth + gap);
+            
+            track.style.transform = `translateX(-${offset}px)`;
+            
+            // 更新按鈕狀態
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex >= totalPages - 1;
+            
+            // 更新指示點
+            updateDots();
+        }
+
+        // 創建指示點
+        function createDots() {
+            const { totalPages } = getCarouselInfo();
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(i));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // 更新指示點
+        function updateDots() {
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        // 跳轉到指定幻燈片
+        function goToSlide(index) {
+            const { totalPages } = getCarouselInfo();
+            currentIndex = Math.max(0, Math.min(index, totalPages - 1));
+            updateCarousel();
+            resetAutoPlay();
+        }
+
+        // 下一張
+        function nextSlide() {
+            const { totalPages } = getCarouselInfo();
+            if (currentIndex < totalPages - 1) {
+                currentIndex++;
+                updateCarousel();
+            }
+        }
+
+        // 上一張
+        function prevSlide() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        }
+
+        // 自動播放
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                const { totalPages } = getCarouselInfo();
+                if (currentIndex >= totalPages - 1) {
+                    currentIndex = 0;
+                } else {
+                    currentIndex++;
+                }
+                updateCarousel();
+            }, 3000);
+        }
+
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+
+        function resetAutoPlay() {
+            stopAutoPlay();
+            startAutoPlay();
+        }
+
+        // 事件監聽
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            resetAutoPlay();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetAutoPlay();
+        });
+
+        // 鍵盤控制
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+                resetAutoPlay();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+                resetAutoPlay();
+            }
+        });
+
+        // 觸控支援
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoPlay();
+        });
+
+        track.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            startAutoPlay();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            if (touchStartX - touchEndX > swipeThreshold) {
+                nextSlide();
+            } else if (touchEndX - touchStartX > swipeThreshold) {
+                prevSlide();
+            }
+        }
+
+        // 滑鼠懸停暫停
+        track.addEventListener('mouseenter', stopAutoPlay);
+        track.addEventListener('mouseleave', startAutoPlay);
+
+        // 視窗大小改變時重新計算
+        window.addEventListener('resize', () => {
+            currentIndex = 0;
+            createDots();
+            updateCarousel();
+        });
+
+        // 初始化
+        createDots();
+        updateCarousel();
+        startAutoPlay();
+    </script>
+</body>
+</html>
