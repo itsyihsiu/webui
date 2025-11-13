@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Demo</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #333;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 90%;
+            max-width: 1400px;
+            overflow: hidden;
+            margin: 40px auto;
+            background: #222;
+            border-radius: 10px;
+            padding: 20px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 25%; /* 一次顯示四張 */
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 12px 20px;
+            font-size: 30px;
+            cursor: pointer;
+            background: rgba(0,0,0,0.4);
+            border: none;
+            color: #fff;
+            z-index: 100;
+            border-radius: 6px;
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+
+        .carousel-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        /* RWD for tablet (顯示 2 張) */
+        @media (max-width: 900px) {
+            .slide {
+                min-width: 50%;
+            }
+        }
+
+        /* RWD for mobile (顯示 1 張) */
+        @media (max-width: 600px) {
+            .slide {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="carousel-container">
+    <div class="carousel-track">
+        <div class="slide"><img src="https://www.moa.gov.tw/upload/images/news/9982/%E5%9C%961_%E6%9E%97%E5%AE%B6%E6%A6%AE%E4%B8%BB%E4%BB%BB%E7%A7%98%E6%9B%B8%E5%87%BA%E5%B8%AD%E5%85%B8%E7%A6%AE%E8%87%B4%E8%A9%9E.jpg"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+        <div class="slide"><img src="https://placehold.co/600x400@2x.png"></div>
+    </div>
+
+    <!-- arrows -->
+    <button class="carousel-btn prev">&#10094;</button>
+    <button class="carousel-btn next">&#10095;</button>
+</div>
+
+<script>
+    const track = document.querySelector('.carousel-track');
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const prevButton = document.querySelector('.prev');
+    const nextButton = document.querySelector('.next');
+
+    let index = 0;
+    const slideCount = slides.length;
+
+    // 自動播放
+    let autoPlayTimer = setInterval(moveToNext, 3000);
+
+    function moveToNext() {
+        index++;
+        if (index > slideCount - visibleSlides()) {
+            index = 0;
+        }
+        updateCarousel();
+    }
+
+    function moveToPrev() {
+        index--;
+        if (index < 0) {
+            index = slideCount - visibleSlides();
+        }
+        updateCarousel();
+    }
+
+    function visibleSlides() {
+        // 根據 RWD 計算目前一頁顯示多少張
+        if (window.innerWidth <= 600) return 1;
+        if (window.innerWidth <= 900) return 2;
+        return 4;
+    }
+
+    function updateCarousel() {
+        const width = slides[0].clientWidth;
+        track.style.transform = `translateX(-${index * width}px)`;
+    }
+
+    nextButton.addEventListener('click', () => {
+        clearInterval(autoPlayTimer);
+        moveToNext();
+    });
+
+    prevButton.addEventListener('click', () => {
+        clearInterval(autoPlayTimer);
+        moveToPrev();
+    });
+
+    window.addEventListener('resize', () => {
+        updateCarousel();
+    });
+</script>
+
+</body>
+</html>
